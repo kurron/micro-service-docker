@@ -1,0 +1,16 @@
+description = 'Command shell for the micro-service'
+
+apply from: "$rootDir/gradle/application.gradle"
+apply from: "$rootDir/gradle/shell.gradle"
+
+dependencies {
+    compile project( ':shared' )
+}
+
+// excludes classes from code coverage check, can specify a directory or individual files
+ext.coverageExcludes = ['org/example/shell/Application']
+
+applicationName = project.name
+mainClassName = "org.example.shell.Application"
+applicationDefaultJvmArgs = ['-Dexample.property=change-me']
+

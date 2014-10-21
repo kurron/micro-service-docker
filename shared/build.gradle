@@ -1,0 +1,8 @@
+description = 'Code shared between micro-service and the shell'
+
+dependencies {
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+}
+
+// excludes classes from code coverage check, can specify a directory or individual files
+ext.coverageExcludes = []

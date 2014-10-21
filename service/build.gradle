@@ -1,0 +1,23 @@
+description = 'Example micro-service implementation'
+
+apply from: "$rootDir/gradle/war.gradle"
+apply from: "$rootDir/gradle/boot.gradle"
+
+dependencies {
+    compile project( ':shared' )
+}
+
+// excludes classes from code coverage check, can specify a directory or individual files
+ext.coverageExcludes = ['org/example/ApplicationProperties',
+                        'org/example/Application',
+                        'org/example/configuration/',
+                        'org/example/echo/EchoDocument',
+                        'org/example/echo/EchoRequest',
+                        'org/example/echo/EchoResponse',
+                        'org/example/echo/SaveEchoDocumentGateway',
+                        'org/example/shared/BaseRepository',
+                        'org/example/shared/Counters',
+                        'org/example/shared/feedback/Deviation',
+                        'org/example/shared/feedback/RecoverableError',
+                        'org/example/shared/feedback/UnrecoverableError',
+                        'org/example/shared/feedback/LoggingFeedbackProvider']

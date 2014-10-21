@@ -1,0 +1,10 @@
+apply plugin: 'jdepend'
+
+jdepend {
+    ignoreFailures = false
+    toolVersion = jdependVersion
+
+    jdependMain.enabled = true
+    jdependTest.enabled = true
+}
+

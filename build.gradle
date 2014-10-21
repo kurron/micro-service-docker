@@ -1,0 +1,138 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}" 
+    }
+}
+
+subprojects {
+
+    group = 'org.example'
+    version = new ProjectVersion( major.toInteger(), minor.toInteger(), patch.toInteger(), release.toBoolean() )
+
+    repositories {
+        jcenter()
+        maven {
+            url = 'http://repo.spring.io/libs-milestone-local/'
+        }
+    }
+
+    configurations.all {
+        exclude group: 'commons-logging'
+        exclude module: 'junit-dep'
+    }
+
+    task printVersion() {
+        group = 'Help'
+        description = 'Prints project version'
+        doLast {
+            logger.quiet "Version: ${version}"
+        }
+    }
+
+    task printStage() {
+        group = 'Help'
+        description = 'Displays whether or not Gradle thinks we are running on a CI server.'
+        doLast {
+            logger.quiet "On Build Server: ${onBuildServer}"
+        }
+    }
+
+    // comment out if you want to have version conflicts detected
+    /*
+    configurations*.resolutionStrategy {
+        failOnVersionConflict()
+    }
+    */
+
+    apply plugin: 'project-report'
+    apply plugin: 'build-dashboard'
+    apply plugin: 'build-announcements'
+
+    apply from: "$rootDir/gradle/groovy.gradle"
+    apply from: "$rootDir/gradle/jacoco.gradle"
+    apply from: "$rootDir/gradle/codenarc.gradle"
+    apply from: "$rootDir/gradle/checkstyle.gradle"
+    apply from: "$rootDir/gradle/maven-publish.gradle"
+//  TODO: Not sure why but FindBugs never completes.  Must revisit.
+//  apply from: "$rootDir/gradle/findbugs.gradle"
+//  TODO: No JDK 8 support yet and not sure which rule sets to use
+//  apply from: "$rootDir/gradle/pmd.gradle"
+//  TODO: No JD 8 support yet
+//  apply from: "$rootDir/gradle/jdepend.gradle"
+
+    dependencies {
+        compile "org.codehaus.groovy:groovy-all:${groovyVersion}:indy"
+        compile "com.netflix.hystrix:hystrix-core:${hystrixVersion}"
+        compile "com.netflix.rxjava:rxjava-core:${rxjavaVersion}"
+        compile "com.netflix.archaius:archaius-core:${archaiusVersion}"
+        compile "org.codehaus.gpars:gpars:${gparsVersion}"
+
+/*
+        compile "org.springframework.cloud:spring-cloud-starter-bus-amqp:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-eureka:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-eureka-server:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-hystrix:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-hystrix-dashboard:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-security:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-turbine:${springCloudVersion}"
+        compile "org.springframework.cloud:spring-cloud-starter-zuul:${springCloudVersion}"
+*/
+
+        testCompile( "org.spockframework:spock-core:${spockVersion}" ) {
+            exclude module: 'groovy-all'
+            exclude module: 'junit-dep'
+        }
+        testCompile( "org.spockframework:spock-spring:${spockVersion}" ) {
+            exclude module: 'groovy-all'
+            exclude module: 'junit-dep'
+        }
+        testCompile "info.cukes:cucumber-junit:${cucumberVersion}"
+        testCompile "info.cukes:cucumber-groovy:${cucumberVersion}"
+        testCompile "info.cukes:cucumber-spring:${cucumberVersion}"
+    }
+
+    task collectJars(type: Copy) {
+        description 'Copy dependencies into build area for use by external tooling, such as a CI machine'
+        from configurations.testRuntime.asFileTree
+        into "$buildDir/dependencies"
+    }
+}
+
+allprojects {
+    defaultTasks << 'clean'
+    defaultTasks << 'projectReport'
+    defaultTasks << 'build'
+    defaultTasks << 'buildDashboard'
+    defaultTasks << 'collectJars'
+
+    if ( 'true' == onBuildServer ) {
+        defaultTasks << 'publish'
+    }
+    else {
+        defaultTasks << 'publishToMavenLocal'
+    }
+}
+
+// formerly in buildSrc but causes problem when mixed with indy compilation
+
+class ProjectVersion {
+    Integer major
+    Integer minor
+    Integer patch
+    Boolean release
+
+    ProjectVersion( Integer major, Integer minor, Integer patch, Boolean release ) {
+        this.major = major
+        this.minor = minor
+        this.patch = patch
+        this.release = release
+    }
+
+    @Override
+    String toString() {
+        "${major}.${minor}.${patch}${release ? '.RELEASE' : '-SNAPSHOT'}"
+    }
+}

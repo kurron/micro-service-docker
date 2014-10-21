@@ -1,0 +1,14 @@
+dependencies {
+    compile "org.springframework.amqp:spring-rabbit:${springAmqpVersion}"
+    compile "org.springframework:spring-core:${springFrameworkVersion}"
+    compile "org.springframework:spring-tx:${springFrameworkVersion}"
+    compile "org.springframework.shell:spring-shell:${springShellVersion}"
+    compile "org.springframework:spring-context-support:${springFrameworkVersion}"
+    compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+    compile "org.slf4j:jul-to-slf4j:${slf4jVersion}"
+    compile "org.slf4j:log4j-over-slf4j:${slf4jVersion}"
+    compile "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+
+    runtime "ch.qos.logback:logback-classic:${logbackVersion}"
+}
+

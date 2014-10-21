@@ -1,0 +1,96 @@
+apply plugin: 'groovy'
+
+compileGroovy {
+    groovyOptions.configurationScript = file( "$rootDir/gradle/groovyCompilerConfiguration.groovy" )
+}
+
+compileGroovy.groovyOptions.optimizationOptions['indy'] = true
+compileTestGroovy.groovyOptions.optimizationOptions['indy'] = true
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+compileGroovy.options*.compilerArgs = ['-Xlint:deprecation','-encoding', 'UTF-8']
+compileTestGroovy.options*.compilerArgs = ['-Xlint:deprecation','-encoding', 'UTF-8']
+
+test {
+    scanForTestClasses = false
+    if ( 'true' == onBuildServer  ) {
+        includes = ['**/*UnitTest.class', '**/*ComponentTest.class', '**/*AcceptanceTest.class']
+        excludes = ['**/BaseUnitTest.class','**/BaseComponentTest.class','**/BaseAcceptanceTest.class']
+    }
+    else {
+        includes = ['**/*UnitTest.class']
+        excludes = ['**/BaseUnitTest.class']
+    }
+
+    systemProperty'spring.profiles.active', activeSpringProfile
+
+    maxParallelForks = Runtime.runtime.availableProcessors()
+    testLogging {
+        showStandardStreams = false
+        exceptionFormat = 'full'
+//      events( 'started', 'passed', 'skipped', 'failed' )
+    }
+}
+
+ext.sharedManifest = manifest {
+    attributes( 'Implementation-Title': project.name, 'Implementation-Version': project.version )
+}
+
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+task testSourcesJar(type: Jar, dependsOn: testClasses) {
+    classifier = 'test-sources'
+    from sourceSets.test.allSource
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+task testBinariesJar(type: Jar, dependsOn: testClasses) {
+    classifier = 'test'
+    from sourceSets.test.output
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+task groovydocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'groovydoc'
+    from project.docsDir.path + '/groovydoc'
+    manifest = project.manifest {
+        from sharedManifest
+    }
+}
+
+artifacts {
+    archives sourcesJar
+    archives testSourcesJar
+    archives testBinariesJar
+    archives groovydocJar
+}
+
+groovydoc {
+    docTitle = "docTitle: $project.name $version"
+    footer = "footer: $project.name $version"
+    header = "header: $project.name $version"
+    windowTitle = "windowTitle: $project.name $version"
+    includePrivate = false
+    overview = 'overview.html'
+    use = true
+}
+
+

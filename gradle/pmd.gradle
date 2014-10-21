@@ -1,0 +1,12 @@
+apply plugin: 'pmd'
+
+pmd {
+    ignoreFailures = false
+    ruleSets = ['basic', 'braces']
+    targetJdk = 1.7
+    toolVersion = pmdVersion
+
+    pmdMain.enabled = true
+    pmdTest.enabled = true
+}
+

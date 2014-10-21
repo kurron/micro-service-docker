@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="false">
+    <contextName>TEST</contextName>
+    <property name="MESSAGE_FORMAT"
+              value="%contextName %5.5relative %1(%.-1level) %4.4mdc{application-type} %35.35logger{0} %message %throwable{short}%n"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${MESSAGE_FORMAT}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ALL</level>
+        </filter>
+    </appender>
+
+    <!-- handles sending messages using background threads -->
+    <appender name="ASYNC-CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- The maximum capacity of the blocking queue. By default, queueSize is set to 256. -->
+        <queueSize>1024</queueSize>
+        <appender-ref ref="CONSOLE"/>
+    </appender>
+
+    <logger name="org.example" level="ALL"/>
+
+    <root level="WARN">
+        <appender-ref ref="ASYNC-CONSOLE"/>
+    </root>
+</configuration>

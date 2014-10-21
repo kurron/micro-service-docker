@@ -1,0 +1,8 @@
+apply plugin: 'war'
+
+war.manifest.attributes( "Implementation-Title": project.name, "Implementation-Version": project.version )
+
+dependencies {
+// not currently needed
+//    providedRuntime "javax.servlet:servlet-api:${servletApiVersion}"
+}

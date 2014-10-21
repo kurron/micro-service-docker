@@ -1,0 +1,12 @@
+apply plugin: 'findbugs'
+
+findbugs {
+    effort = 'true' == onBuildServer ? 'max' :'min'
+    ignoreFailures = false
+    reportLevel = 'medium'
+    toolVersion = findBugsVersion
+
+    findbugsMain.enabled = true
+    findbugsTest.enabled = true
+}
+

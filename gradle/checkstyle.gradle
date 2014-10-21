@@ -1,0 +1,14 @@
+apply plugin: 'checkstyle'
+
+checkstyle {
+    configFile = file( "${rootDir}/config/checkstyle.xml" )
+    configProperties = [suppressionDirectory: projectDir.path + '/src/main/config' ]
+    ignoreFailures = false
+    //reportsDir
+    showViolations = true
+    toolVersion = checkstyleVersion
+
+    checkstyleMain.enabled = true
+    checkstyleTest.enabled = true
+}
+
