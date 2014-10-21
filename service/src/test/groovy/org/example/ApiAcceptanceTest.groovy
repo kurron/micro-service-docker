@@ -7,7 +7,7 @@ import org.junit.runner.RunWith
  * Driver for user acceptance tests.
  */
 @Cucumber.Options( tags = ['@api'],
-                   strict = true,
+                   strict = false,
                    format = ['pretty', 'html:build/reports/cucumber'],
 //                   glue = ['src/test/groovy'],
                    monochrome = true,

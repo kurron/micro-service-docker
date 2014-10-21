@@ -1,0 +1,5 @@
+.gradle/
+service/build/
+shared/build/
+shell/build/
+
