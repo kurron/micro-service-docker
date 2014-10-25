@@ -8,3 +8,4 @@ docker run --detach --hostname="rabbitmq" --name="rabbitmq" --memory="256m" --vo
 
 # launch the application, map its port to localhost:8080 and have Docker take care of mapping the MongoDB and RabbitMQ ports to this container
 docker run --detach --hostname="micro-service" --name="micro-service" --memory="256m" --publish 8080:8080 --link mongodb:mongodb --link rabbitmq:rabbitmq  kurron/micro-service-docker:latest
+#docker run --interactive --tty --hostname="micro-service" --name="micro-service" --memory="256m" --publish 8080:8080 --link mongodb:mongodb --link rabbitmq:rabbitmq  kurron/micro-service-docker:latest /bin/bash
