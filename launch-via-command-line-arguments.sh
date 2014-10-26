@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#clean up from previous runs
-#sudo rm -rf /tmp/mongodb-data /tmp/rabbitmq
-
 # launch MongoDB, mapping exposed ports and use /tmp/mongodb-data for persistent storage
 docker run --detach --net="bridge" --publish 27017:27017 --hostname="mongodb" --name="mongodb" --memory="256m" --volume /tmp/mongodb-data:/data mongo:latest
 
