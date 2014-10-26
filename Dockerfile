@@ -9,6 +9,9 @@ VOLUME ["/root/config"]
 # copy the application
 COPY service/build/libs/service-0.0.0-SNAPSHOT.war /root/
 
+# copy the launch script
+COPY entry-point.sh /root/
+
 # expose port 8080 to the outside world
 EXPOSE 8080
 
@@ -16,4 +19,4 @@ EXPOSE 8080
 WORKDIR /root
 
 # start the application
-ENTRYPOINT java -jar /root/service-0.0.0-SNAPSHOT.war
+ENTRYPOINT ["/root/entry-point.sh"]
